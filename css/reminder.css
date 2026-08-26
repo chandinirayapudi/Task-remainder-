@@ -1,0 +1,727 @@
+/* ==========================================
+   TaskFlow Pro - Reminder Modal
+========================================== */
+body{
+    outline:5px solid lime;
+}
+
+/* Overlay */
+
+.modal-overlay{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100vh;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:1000;
+
+}
+
+/* Show Popup */
+
+.modal-overlay.active{
+
+    display:flex;
+
+}
+
+/* ==========================================
+   Reminder Popup
+========================================== */
+
+.reminder-modal{
+
+    width:520px;
+
+    max-width:95%;
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+    animation:popup .3s ease;
+
+}
+
+/* ==========================================
+   Popup Animation
+========================================== */
+
+@keyframes popup{
+
+    from{
+
+        transform:scale(.85);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+/* ==========================================
+   Header
+========================================== */
+
+.modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.modal-header h2{
+
+    color:#4f46e5;
+
+    font-size:24px;
+
+}
+
+.modal-header button{
+
+    border:none;
+
+    background:none;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.modal-header button:hover{
+
+    color:#ef4444;
+
+}
+
+/* ==========================================
+   Input Groups
+========================================== */
+
+.input-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    margin-bottom:18px;
+
+}
+
+.input-group label{
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+    color:#374151;
+
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea{
+
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.3s;
+
+}
+
+.input-group textarea{
+
+    resize:vertical;
+
+    min-height:80px;
+
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus{
+
+    border-color:#4f46e5;
+
+    box-shadow:0 0 8px rgba(79,70,229,.2);
+
+}
+
+/* ==========================================
+   Modal Buttons
+========================================== */
+
+.modal-buttons{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+    margin-top:20px;
+
+}
+
+#cancelBtn{
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#e5e7eb;
+
+    color:#111827;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+#saveBtn{
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#4f46e5;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+#cancelBtn:hover{
+
+    background:#d1d5db;
+
+}
+
+#saveBtn:hover{
+
+    background:#4338ca;
+
+}
+/* ==========================================
+   Reminder Section
+========================================== */
+
+.reminder-section{
+
+    margin-top:35px;
+
+}
+
+.reminder-section h2{
+
+    color:#4f46e5;
+
+    margin-bottom:20px;
+
+    font-size:26px;
+
+}
+
+/* ==========================================
+   Reminder Container
+========================================== */
+
+#reminderContainer{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:20px;
+
+    margin-top:20px;
+
+}
+
+/* ==========================================
+   Empty Message
+========================================== */
+
+.empty-message{
+
+    grid-column:1/-1;
+
+    text-align:center;
+
+    padding:40px;
+
+    border:2px dashed #d1d5db;
+
+    border-radius:15px;
+
+    color:#6b7280;
+
+    background:#fafafa;
+
+}
+
+/* ==========================================
+   Reminder Card
+========================================== */
+
+.reminder-card{
+
+    background:#ffffff;
+
+    border-left:6px solid transparent;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    min-height:220px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+}
+
+.reminder-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+}
+
+/* ==========================================
+   Card Title
+========================================== */
+
+.reminder-card h3{
+
+    color:#4f46e5;
+
+    font-size:22px;
+
+    margin-bottom:15px;
+
+    word-break:break-word;
+
+}
+
+/* ==========================================
+   Card Details
+========================================== */
+
+.reminder-card p{
+
+    margin:8px 0;
+
+    color:#555;
+
+    font-size:15px;
+
+    line-height:1.5;
+
+}
+
+/* ==========================================
+   Buttons
+========================================== */
+
+.card-buttons{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-top:20px;
+
+}
+
+.card-buttons button{
+
+    flex:1;
+
+    border:none;
+
+    padding:10px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    transition:.3s;
+
+}
+
+.edit-btn{
+
+    background:#3b82f6;
+
+    color:white;
+
+}
+
+.edit-btn:hover{
+
+    background:#2563eb;
+
+}
+
+.delete-btn{
+
+    background:#ef4444;
+
+    color:white;
+
+}
+
+.delete-btn:hover{
+
+    background:#dc2626;
+
+}
+/* ==========================================
+   Priority Colors
+========================================== */
+
+.priority-high{
+
+    border-left:6px solid #ef4444 !important;
+    background: #fff5f5;
+
+}
+
+.priority-medium{
+
+    border-left:6px solid #f59e0b !important;
+    background: #fffbeb;
+     
+
+
+}
+
+.priority-low{
+
+    border-left:6px solid #10b981 !important;
+    background: #f0fdf4;
+
+}
+
+/* ==========================================
+   Completed Reminder
+========================================== */
+
+.completed-card{
+
+    opacity:.75;
+
+    border-left:6px solid #10b981;
+
+    background:#f0fdf4;
+
+}
+
+.completed-card h3{
+
+    text-decoration:line-through;
+
+}
+
+/* ==========================================
+   Button Animation
+========================================== */
+
+.card-buttons button{
+
+    transition:.25s;
+
+}
+
+.card-buttons button:hover{
+
+    transform:scale(1.05);
+
+}
+
+/* ==========================================
+   Scrollbar
+========================================== */
+
+#reminderContainer::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+#reminderContainer::-webkit-scrollbar-thumb{
+
+    background:#4f46e5;
+
+    border-radius:20px;
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:992px){
+
+    #reminderContainer{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    #reminderContainer{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .reminder-modal{
+
+        width:95%;
+
+        padding:20px;
+
+    }
+
+    .card-buttons{
+
+        flex-direction:column;
+
+    }
+
+}
+
+@media(max-width:480px){
+
+    .reminder-card{
+
+        padding:15px;
+
+    }
+
+    .reminder-card h3{
+
+        font-size:18px;
+
+    }
+
+    .reminder-card p{
+
+        font-size:14px;
+
+    }
+
+}
+.complete-btn{
+
+    background:#10b981;
+
+    color:white;
+
+}
+
+.complete-btn:hover{
+
+    background:#059669;
+
+}
+.complete-btn:disabled{
+
+    background:#10b981;
+
+    cursor:default;
+
+    opacity:.8;
+
+}
+/* ======================================
+   Upcoming Reminder Cards
+====================================== */
+
+#upcomingContainer{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    margin-top:20px;
+
+}
+
+.upcoming-card{
+
+    background:#ffffff;
+
+    border-left:5px solid #4f46e5;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.upcoming-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+
+}
+
+.upcoming-card h3{
+
+    color:#4f46e5;
+
+    margin-bottom:10px;
+
+    font-size:18px;
+
+}
+
+.upcoming-card p{
+
+    margin:6px 0;
+
+    color:#555;
+
+}
+/* ==============================
+   Overdue Reminder
+============================== */
+
+.overdue-card{
+
+    border-left:6px solid #dc2626 !important;
+
+    background:#fef2f2;
+
+}
+
+.overdue-card h3{
+
+    color:#dc2626;
+
+}
+
+.overdue-badge{
+
+    display:inline-block;
+
+    margin-top:10px;
+
+    padding:5px 10px;
+
+    background:#dc2626;
+
+    color:white;
+
+    border-radius:8px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+.search-container{
+
+    display:flex;
+
+    gap:15px;
+
+    margin:20px 0;
+
+}
+
+.search-container input{
+
+    flex:3;
+
+}
+
+.search-container select{
+
+    flex:1;
+
+    padding:14px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+}

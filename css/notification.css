@@ -1,0 +1,174 @@
+/* ===================================
+   TaskFlow Pro Notification
+=================================== */
+
+.toast-container{
+
+    position:fixed;
+
+    top:20px;
+
+    right:20px;
+
+    z-index:9999;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.toast{
+
+    width:340px;
+
+    background:#ffffff;
+
+    border-radius:15px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.18);
+
+    padding:18px;
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:15px;
+
+    animation:slideIn .4s ease;
+
+    overflow:hidden;
+
+}
+
+.toast i{
+
+    font-size:24px;
+
+}
+
+.toast-content{
+
+    flex:1;
+
+}
+
+.toast-title{
+
+    font-size:17px;
+
+    font-weight:600;
+
+    margin-bottom:4px;
+
+}
+
+.toast-message{
+
+    font-size:14px;
+
+    color:#555;
+
+    line-height:1.5;
+
+}
+
+.toast.success{
+
+    border-left:6px solid #10b981;
+
+}
+
+.toast.success i{
+
+    color:#10b981;
+
+}
+
+.toast.error{
+
+    border-left:6px solid #ef4444;
+
+}
+
+.toast.error i{
+
+    color:#ef4444;
+
+}
+
+.toast.warning{
+
+    background:#293a50;
+
+    color:#efeaea;
+
+    border-left:6px solid #c89b4e;
+
+}
+
+.toast.warning i{
+
+    color:#fbbf24;
+
+}
+.toast.warning .toast-title,
+.toast.warning .toast-message{
+
+    color:#ffffff;
+
+}
+.toast.info{
+
+    border-left:6px solid #3b82f6;
+
+}
+
+.toast.info i{
+
+    color:#3b82f6;
+
+}
+
+@keyframes slideIn{
+
+    from{
+
+        transform:translateX(120%);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:translateX(0);
+
+        opacity:1;
+
+    }
+
+}
+
+@keyframes slideOut{
+
+    from{
+
+        transform:translateX(0);
+
+        opacity:1;
+
+    }
+
+    to{
+
+        transform:translateX(120%);
+
+        opacity:0;
+
+    }
+
+}

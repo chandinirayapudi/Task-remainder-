@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Pro</title> <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/reminder.css">
+    <link rel="stylesheet" href="css/calendar.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/analytics.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+</head>
+
+<body> <!-- ========================= Sidebar ========================== -->
+    
+<aside class="sidebar">
+
+    <!-- Logo -->
+    <div class="logo">
+        <h2>TaskFlow Pro</h2>
+    </div>
+
+
+    <!-- Navigation -->
+    <nav>
+
+        <!-- Dashboard -->
+        <a href="#" class="active" id="sidebarDashboardBtn">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+
+
+        <!-- Reminders -->
+        <a href="#" id="sidebarRemindersBtn">
+            <i class="fa-solid fa-bell"></i>
+            <span>Reminders</span>
+        </a>
+
+
+        <!-- Calendar -->
+        <a href="#" id="sidebarCalendarBtn">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Calendar</span>
+        </a>
+
+
+        <!-- Analytics -->
+        <a href="#" id="sidebarAnalyticsBtn">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Analytics</span>
+        </a>
+
+
+        <!-- Location -->
+        <a href="#" id="sidebarLocationBtn">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Location</span>
+        </a>
+
+
+        <!-- Settings -->
+        <a href="#" id="sidebarSettingsBtn">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+</aside>
+
+ <!-- ========================= Main Content ========================== -->
+    <main class="main-content"> <!-- Top Bar -->
+        <header class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+            </div> <button class="add-btn"> <i class="fa-solid fa-plus"></i> New Reminder </button>
+        </header> <!-- Welcome Card -->
+        <section class="welcome-card">
+            <h2>Good Morning 👋</h2>
+            <p id="welcome-text"> Stay organized and never miss an important reminder. </p>
+        </section> <!-- Dashboard Cards -->
+        <section class="cards">
+            <div class="card"> <i class="fa-solid fa-list-check"></i>
+                <h3>Today's Tasks</h3>
+                <h2 id="todayCount">0</h2>
+            </div>
+            <div class="card"> <i class="fa-solid fa-clock"></i>
+                <h3>Upcoming</h3>
+                <h2 id="upcomingCount">0</h2>
+            </div>
+            <div class="card"> <i class="fa-solid fa-circle-check"></i>
+                <h3>Completed</h3>
+                <h2 id="completedCount">0</h2>
+            </div>
+            <div class="card"> <i class="fa-solid fa-triangle-exclamation"></i>
+                <h3>Overdue</h3>
+                <h2 id="overdueCount">0</h2>
+            </div>
+        </section>
+        <section class="reminder-section">
+
+    <h2>My Reminders</h2>
+
+    <div class="search-container">
+
+        <input
+            type="text"
+            id="searchReminder"
+            placeholder="🔍 Search reminders...">
+
+        <select id="categoryFilter">
+
+            <option value="All">All Categories</option>
+            <option value="Study">Study</option>
+            <option value="Work">Work</option>
+            <option value="Medicine">Medicine</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Personal">Personal</option>
+            <option value="Music">Music</option>
+            <option value="Other">Other</option>
+
+        </select>
+        <select id="priorityFilter">
+
+    <option value="All">All Priority</option>
+
+    <option value="High">High</option>
+
+    <option value="Medium">Medium</option>
+
+    <option value="Low">Low</option>
+
+</select>
+
+    </div>
+
+    <div id="reminderContainer">
+
+        <p class="empty-message">
+            No reminders yet.
+        </p>
+
+    </div>
+
+</section>
+ <!-- Quick Actions -->
+        <section class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="action-grid"> 
+                <button id="quickReminderBtn"> 
+                    <i class="fa-solid fa-plus"></i><br><br> 
+                    <span>
+                        Create Reminder
+                    </span>
+                 </button> 
+                 <button id="quickCalendarBtn"> 
+                    <i
+                        class="fa-solid fa-calendar-days"></i><br><br> 
+                        <span>View Calendar</span> 
+                    </button> <button
+                    id="quickToday'sBtn">
+                     <i class="fa-solid fa-list-check"></i><br><br>
+                      <span>Today's Tasks</span>
+                </button> <button id="quickSettingsBtn">
+                     <i class="fa-solid fa-gear"></i><br><br>
+                      <span>Settings</span>
+                </button> </div>
+                
+<!-- Analytics Section -->
+
+<section class="analytics-section">
+
+    <div class="analytics-header">
+        <h2>Analytics</h2>
+        <p>Track your productivity and task progress.</p>
+    </div>
+
+    <div class="analytics-cards">
+
+        <!-- Total Tasks -->
+        <div class="analytics-card">
+            <i class="fa-solid fa-list-check"></i>
+
+            <div>
+                <p>Total Tasks</p>
+                <h3 id="analyticsTotal">0</h3>
+            </div>
+        </div>
+
+
+        <!-- Completed -->
+        <div class="analytics-card">
+            <i class="fa-solid fa-circle-check"></i>
+
+            <div>
+                <p>Completed</p>
+                <h3 id="analyticsCompleted">0</h3>
+            </div>
+        </div>
+
+
+        <!-- Pending -->
+        <div class="analytics-card">
+            <i class="fa-solid fa-clock"></i>
+
+            <div>
+                <p>Pending</p>
+                <h3 id="analyticsPending">0</h3>
+            </div>
+        </div>
+
+
+        <!-- Overdue -->
+        <div class="analytics-card">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <div>
+                <p>Overdue</p>
+                <h3 id="analyticsOverdue">0</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Completion Progress -->
+
+    <div class="analytics-progress">
+
+        <div class="progress-header">
+            <h3>Completion Rate</h3>
+
+            <span id="completionRate">0%</span>
+        </div>
+
+        <div class="progress-bar">
+            <div id="completionProgress"></div>
+        </div>
+
+    </div>
+
+
+    <!-- Category Statistics -->
+
+    <div class="category-analytics">
+
+        <h3>Tasks by Category</h3>
+
+        <div id="categoryStats"></div>
+
+    </div>
+
+</section>
+        </section>
+<!-- ========================= Location Section ========================= -->
+
+<section class="location-section">
+
+    <div class="location-header">
+        <h2>📍 Location Reminders</h2>
+        <p>Set reminders based on your current location.</p>
+    </div>
+
+    <div class="location-content">
+
+        <button id="getLocationBtn">
+            <i class="fa-solid fa-location-crosshairs"></i>
+            Get My Location
+        </button>
+
+        <div id="locationStatus">
+            Location not detected yet.
+
+        </div>
+        <div id="locationMap"></div>
+
+    </div>
+
+</section>
+
+
+         <!-- Upcoming Reminders -->
+        <section class="upcoming">
+            <h2>Upcoming Reminders</h2>
+            <div id="upcomingContainer"> </div>
+        </section>
+        <!-- ========================================== Calendar Popup ========================================== -->
+        <div class="calendar-overlay" id="calendarOverlay">
+            <div class="calendar-popup">
+                <div class="calendar-top">
+                    <h2>📅 Calendar</h2> 
+                    <button id="closeCalendar">
+                         <i class="fa-solid fa-xmark"></i> </button>
+                </div>
+                <div class="calendar-header"> <button id="prevMonth"> ◀ </button>
+                    <h2 id="monthYear"> July 2026 </h2> <button id="nextMonth"> ▶ </button>
+                </div>
+                <div class="calendar-weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+                <div id="calendarDays" class="calendar-days"> </div>
+            </div>
+        </div>
+    </main>
+    
+ <!-- ========================= Reminder Modal ========================= -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="reminder-modal">
+            <div class="modal-header">
+                <h2>Create Reminder</h2> <button id="closeModal"> <i class="fa-solid fa-xmark"></i> </button>
+            </div>
+            <form id="reminderForm">
+                <div class="input-group"> <label>Task Name</label> <input type="text" id="taskName"
+                        placeholder="Enter task name" required> </div>
+                <div class="input-group"> <label>Category</label> <select id="category">
+                        <option>Study</option>
+                        <option>Work</option>
+                        <option>Medicine</option>
+                        <option>Shopping</option>
+                        <option>Personal</option>
+                        <option>Other</option>
+                    </select> </div>
+                <div class="input-group"> <label>Priority</label> <select id="priority">
+                        <option>Low</option>
+                        <option selected>Medium</option>
+                        <option>High</option>
+                    </select> </div>
+                <div class="input-group"> <label>Date</label> <input type="date" id="taskDate" required> </div>
+                <div class="input-group"> <label>Time</label> <input type="time" id="taskTime" required> </div>
+                <div class="input-group"> <label>Duration</label> <input type="text" id="duration"
+                        placeholder="Example: 2 Hours"> </div>
+                <div class="input-group">
+                     <label>Notes</label>
+                      <textarea id="notes" rows="4"
+                        placeholder="Additional notes...">
+                    </textarea>
+                    <!-- Location Reminder -->
+
+<div class="input-group location-reminder-option">
+
+    <label>
+        📍 Location Reminder
+    </label>
+
+    <label class="location-toggle">
+        <input type="checkbox" id="locationReminder">
+        <span>Enable location reminder</span>
+    </label>
+
+    <button
+        type="button"
+        id="useCurrentLocationBtn"
+        style="display: none;">
+        📍 Use Current Location
+    </button>
+
+    <p id="selectedLocationText"
+       style="display: none;">
+        No location selected.
+    </p>
+
+</div>
+                 </div>
+                <div class="modal-buttons"> 
+                    <button type="button" id="cancelBtn"> Cancel </button>
+                     <button type="submit"
+                        id="saveBtn"> Save Reminder </button> 
+                    </div>
+            </form>
+        </div>
+    </div> <!-- JavaScript -->
+    <script src="js/storage.js"></script>
+    <script src="js/notification.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/reminder.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/search.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+    <script src="js/location.js"></script>
+</body>
+
+</html>
