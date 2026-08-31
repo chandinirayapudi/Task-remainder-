@@ -123,15 +123,56 @@ if (quickToday) {
     });
 
 }
-const quickSettings =
-document.getElementById("quickSettingsBtn");
+ // ======================================
+// Quick Actions
+// ======================================
 
-if(quickSettings){
+document.addEventListener("DOMContentLoaded", function () {
 
-    quickSettings.addEventListener("click", () => {
+    const quickToday =
+        document.getElementById("quickToday'sBtn");
 
-        alert("⚙️ Settings module coming soon.");
+    if (quickToday) {
 
-    });
+        quickToday.addEventListener("click", function () {
 
-}
+            const today =
+                new Date().toISOString().split("T")[0];
+
+            const cards =
+                document.querySelectorAll(".reminder-card");
+
+            cards.forEach(function (card) {
+
+                const dateText =
+                    card.querySelector("p:nth-of-type(3)");
+
+                if (!dateText) return;
+
+                const taskDate =
+                    dateText.textContent
+                        .replace("📅", "")
+                        .trim();
+
+                card.style.display =
+                    taskDate === today ? "flex" : "none";
+
+            });
+
+            const reminderSection =
+                document.querySelector(".reminder-section");
+
+            if (reminderSection) {
+
+                reminderSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+
+        });
+
+    }
+
+});

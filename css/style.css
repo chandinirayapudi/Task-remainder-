@@ -19,6 +19,7 @@
 
     --background:#f5f7fb;
     --card:#ffffff;
+    --card-bg:#ffffff;
 
     --text:#1f2937;
     --text-light:#6b7280;
@@ -172,6 +173,16 @@ body{
 }
 
 
+.topbar-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:center;
+
+}
+
 .add-btn{
 
     background:var(--primary);
@@ -282,6 +293,19 @@ body{
     color:var(--text-light);
 
     margin-bottom:15px;
+
+}
+
+
+.card h2{
+
+    font-size:36px;
+
+    font-weight:700;
+
+    color:#111827;
+
+    line-height:1;
 
 }
 
@@ -555,4 +579,374 @@ padding:20px;
     padding: 12px 20px;
     cursor: pointer;
     font-size: 15px;
+}
+
+/* ==========================================
+   Dark Mode
+========================================== */
+
+body.dark-mode {
+    background: #0f172a;
+    color: #e2e8f0;
+    --card-bg: #1e293b;
+    --card: #1e293b;
+    --text: #e2e8f0;
+    --text-light: #94a3b8;
+    --border: #334155;
+    --shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+/* Sidebar */
+
+body.dark-mode .sidebar {
+    background: #1e293b;
+    box-shadow: 2px 0 15px rgba(0,0,0,.3);
+}
+
+body.dark-mode .sidebar nav a {
+    color: #cbd5e1;
+}
+
+body.dark-mode .sidebar nav a:hover,
+body.dark-mode .sidebar nav a.active {
+    background: #6366f1;
+    color: #ffffff;
+}
+
+/* Main content */
+
+body.dark-mode .main-content {
+    color: #e2e8f0;
+}
+
+/* Topbar */
+
+body.dark-mode .topbar h1 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .add-btn {
+    background: #6366f1;
+}
+
+body.dark-mode .add-btn:hover {
+    background: #818cf8;
+}
+
+/* Welcome card - keep gradient but adjust */
+
+body.dark-mode .welcome-card {
+    background: linear-gradient(135deg, #4338ca, #6d28d9);
+    box-shadow: 0 10px 25px rgba(0,0,0,.3);
+}
+
+body.dark-mode .welcome-card p {
+    color: #e2e8f0;
+}
+
+/* Dashboard stat cards */
+
+body.dark-mode .card {
+    background: #1e293b;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+body.dark-mode .card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,.35);
+}
+
+body.dark-mode .card h2 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .card h3 {
+    color: #94a3b8;
+}
+
+/* Quick action buttons */
+
+body.dark-mode .quick-actions h2 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .action-grid button {
+    background: #1e293b;
+    color: #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+body.dark-mode .action-grid button:hover {
+    background: #6366f1;
+    color: #ffffff;
+}
+
+/* Reminder section */
+
+body.dark-mode .reminder-section h2 {
+    color: #818cf8;
+}
+
+body.dark-mode .search-container input {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .search-container select {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .empty-message {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+/* Reminder cards */
+
+body.dark-mode .reminder-card {
+    background: #1e293b;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+body.dark-mode .reminder-card h3 {
+    color: #818cf8;
+}
+
+body.dark-mode .reminder-card p {
+    color: #94a3b8;
+}
+
+body.dark-mode .reminder-card.priority-high {
+    background: #2d1215;
+}
+
+body.dark-mode .reminder-card.priority-medium {
+    background: #2d2510;
+}
+
+body.dark-mode .reminder-card.priority-low {
+    background: #0d2818;
+}
+
+body.dark-mode .reminder-card.completed-card {
+    background: #0d2818;
+}
+
+body.dark-mode .reminder-card.overdue-card {
+    background: #2d1215;
+}
+
+/* Upcoming section */
+
+body.dark-mode .upcoming {
+    background: #1e293b;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+body.dark-mode .upcoming h2 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .upcoming-card {
+    background: #0f172a;
+    box-shadow: 0 4px 10px rgba(0,0,0,.3);
+}
+
+body.dark-mode .upcoming-card h3 {
+    color: #818cf8;
+}
+
+body.dark-mode .upcoming-card p {
+    color: #94a3b8;
+}
+
+body.dark-mode .empty i {
+    color: #475569;
+}
+
+body.dark-mode .empty p {
+    color: #64748b;
+}
+
+/* Location section */
+
+body.dark-mode .location-section {
+    color: #e2e8f0;
+}
+
+body.dark-mode .location-header p {
+    color: #94a3b8;
+}
+
+body.dark-mode #locationStatus {
+    color: #94a3b8;
+}
+
+body.dark-mode #getLocationBtn {
+    background: #6366f1;
+    color: #ffffff;
+}
+
+/* Reminder modal dark mode */
+
+body.dark-mode .reminder-modal {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+body.dark-mode .modal-header h2 {
+    color: #818cf8;
+}
+
+body.dark-mode .modal-header button {
+    color: #94a3b8;
+}
+
+body.dark-mode .input-group label {
+    color: #cbd5e1;
+}
+
+body.dark-mode .input-group input,
+body.dark-mode .input-group select,
+body.dark-mode .input-group textarea {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .input-group input:focus,
+body.dark-mode .input-group select:focus,
+body.dark-mode .input-group textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 8px rgba(99,102,241,.3);
+}
+
+body.dark-mode #cancelBtn {
+    background: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode #cancelBtn:hover {
+    background: #475569;
+}
+
+body.dark-mode #saveBtn {
+    background: #6366f1;
+}
+
+body.dark-mode #saveBtn:hover {
+    background: #818cf8;
+}
+
+body.dark-mode .empty-message {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+/* Card buttons dark mode */
+
+body.dark-mode .edit-btn {
+    background: #2563eb;
+}
+
+body.dark-mode .edit-btn:hover {
+    background: #3b82f6;
+}
+
+body.dark-mode .complete-btn {
+    background: #059669;
+}
+
+body.dark-mode .complete-btn:hover {
+    background: #10b981;
+}
+
+body.dark-mode .complete-btn:disabled {
+    background: #059669;
+}
+
+body.dark-mode .delete-btn {
+    background: #dc2626;
+}
+
+body.dark-mode .delete-btn:hover {
+    background: #ef4444;
+}
+
+/* Overdue badge dark mode */
+
+body.dark-mode .overdue-badge {
+    background: #dc2626;
+}
+
+/* Voice button dark mode */
+
+body.dark-mode .voice-btn {
+    background: #6366f1;
+}
+
+body.dark-mode .voice-btn:hover {
+    background: #818cf8;
+}
+
+/* Analytics section */
+
+body.dark-mode .analytics-section {
+    color: #e2e8f0;
+}
+
+body.dark-mode .analytics-header h2 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .analytics-header p {
+    color: #94a3b8;
+}
+
+body.dark-mode .analytics-card {
+    background: #1e293b;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+body.dark-mode .analytics-card p {
+    color: #94a3b8;
+}
+
+body.dark-mode .analytics-card h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .analytics-progress {
+    background: #1e293b;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+body.dark-mode .progress-header h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .progress-header span {
+    color: #22c55e;
+}
+
+body.dark-mode .progress-bar {
+    background: #334155;
+}
+
+body.dark-mode .category-analytics {
+    background: #1e293b;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+body.dark-mode .category-analytics h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .category-row {
+    border-color: #334155;
+    color: #e2e8f0;
 }

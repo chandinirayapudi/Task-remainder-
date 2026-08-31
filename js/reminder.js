@@ -44,6 +44,12 @@ let selectedLatitude = null;
 let selectedLongitude = null;
 
 // ==============================
+// Checklist state
+// ==============================
+
+let currentChecklist = [];
+
+// ==============================
 // Edit Mode
 // ==============================
 
@@ -58,6 +64,7 @@ function openReminderModal(){
     reminderForm.reset();
 
     editingIndex = -1;
+    currentChecklist = [];
 
     const now = new Date();
 
@@ -75,6 +82,12 @@ function openReminderModal(){
     document.getElementById("taskTime").value =
     `${hours}:${minutes}`;
 
+    // Reset checklist
+    document.getElementById("checklistGroup").style.display = "none";
+    document.getElementById("checklistContainer").innerHTML = "";
+    document.getElementById("enableChecklist").checked = false;
+    renderChecklist();
+
     modalOverlay.classList.add("active");
 
 }
@@ -88,6 +101,7 @@ function closeReminderModal(){
     reminderForm.reset();
 
     editingIndex = -1;
+    currentChecklist = [];
 
     modalOverlay.classList.remove("active");
 
@@ -130,6 +144,72 @@ modalOverlay.addEventListener(
     }
 
 );
+
+// ==============================
+// Checklist Toggle
+// ==============================
+
+document.getElementById("enableChecklist").addEventListener("change", function() {
+    var group = document.getElementById("checklistGroup");
+    group.style.display = this.checked ? "block" : "none";
+    if (!this.checked) {
+        currentChecklist = [];
+        renderChecklist();
+    }
+});
+
+// ==============================
+// Add Checklist Item
+// ==============================
+
+document.getElementById("addChecklistBtn").addEventListener("click", addChecklistItem);
+
+document.getElementById("checklistInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        addChecklistItem();
+    }
+});
+
+function addChecklistItem() {
+    var input = document.getElementById("checklistInput");
+    var text = input.value.trim();
+    if (!text) return;
+    currentChecklist.push({ text: text, done: false });
+    input.value = "";
+    renderChecklist();
+}
+
+function renderChecklist() {
+    var container = document.getElementById("checklistContainer");
+    container.innerHTML = "";
+    currentChecklist.forEach(function(item, idx) {
+        var div = document.createElement("div");
+        div.className = "checklist-item" + (item.done ? " done" : "");
+        div.innerHTML =
+            '<input type="checkbox" ' + (item.done ? "checked" : "") +
+            ' onchange="toggleChecklistItem(' + idx + ')">' +
+            '<label onclick="toggleChecklistItem(' + idx + ')">' + escapeHtml(item.text) + '</label>' +
+            '<button class="remove-item" onclick="removeChecklistItem(' + idx + ')">×</button>';
+        container.appendChild(div);
+    });
+}
+
+function toggleChecklistItem(idx) {
+    currentChecklist[idx].done = !currentChecklist[idx].done;
+    renderChecklist();
+}
+
+function removeChecklistItem(idx) {
+    currentChecklist.splice(idx, 1);
+    renderChecklist();
+}
+
+function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 // ==============================
 // Location Reminder Toggle
@@ -202,7 +282,6 @@ useCurrentLocationBtn.addEventListener("click", function () {
                 const address =
                     data.address || {};
 
-                
                 const place =
                  address.village ||
                  address.town ||
@@ -211,8 +290,6 @@ useCurrentLocationBtn.addEventListener("click", function () {
                  address.neighbourhood ||
                  address.road ||
                 "Selected Location";
-
-
 
                 const city =
                     address.city ||
@@ -228,45 +305,21 @@ useCurrentLocationBtn.addEventListener("click", function () {
                     place;
 
                 if (city && city !== place) {
-
                     readableLocation +=
                         ", " + city;
-
                 }
 
                 if (state) {
-
                     readableLocation +=
                         ", " + state;
-
                 }
 
                 selectedLocationText.textContent =
                     "📍 " + readableLocation;
 
-                console.log(
-                    "Latitude:",
-                    selectedLatitude
-                );
-
-                console.log(
-                    "Longitude:",
-                    selectedLongitude
-                );
-
-                console.log(
-                    "Location Name:",
-                    readableLocation
-                );
-
             }
 
             catch (error) {
-
-                console.error(
-                    "Reverse geocoding error:",
-                    error
-                );
 
                 selectedLocationText.textContent =
                     "📍 Location selected";
@@ -285,8 +338,6 @@ useCurrentLocationBtn.addEventListener("click", function () {
     );
 
 });
-
-
 
 // ==============================
 // Save Reminder
@@ -317,6 +368,9 @@ reminderForm.addEventListener("submit", function(event){
     const notes =
     document.getElementById("notes").value.trim();
 
+    const repeatOption =
+    document.getElementById("repeatOption").value;
+
     // Required Validation
 
     if(taskName === ""){
@@ -342,22 +396,23 @@ return;
 
     }
 
-    // Future Date Validation
+    // Future Date Validation (skip for recurring)
 
-    const currentTime = new Date();
+    if (repeatOption === "none") {
+        const currentTime = new Date();
+        const selectedTime =
+        new Date(taskDate + "T" + taskTime);
 
-    const selectedTime =
-    new Date(taskDate + "T" + taskTime);
+        if(selectedTime <= currentTime){
 
-    if(selectedTime <= currentTime){
+            showNotification(
+        "Invalid Date",
+        "Please select a future date and time.",
+        "error"
+    );
+            return;
 
-        showNotification(
-    "Invalid Date",
-    "Please select a future date and time.",
-    "error"
-);
-        return;
-
+        }
     }
 
     // Reminder Object
@@ -381,6 +436,12 @@ const reminder = {
     notes: notes,
 
     completed: false,
+
+    // Recurring
+    repeat: repeatOption,
+
+    // Checklist
+    checklist: currentChecklist.length > 0 ? currentChecklist : [],
 
     // Location Reminder
     locationEnabled:
@@ -434,6 +495,7 @@ updateDashboardCounts();
 
 closeReminderModal();
 });
+
 // ==============================
 // Display Reminders
 // ==============================
@@ -459,7 +521,6 @@ function displayReminders(){
     }
 
     reminders.forEach(function(reminder,index){
-        console.log(reminder.priority)
 
         let priorityClass = "";
         const reminderDate =
@@ -487,12 +548,31 @@ reminderDate < new Date();
 
         }
 
+        // Recurring badge
+        var repeatLabel = "";
+        if (reminder.repeat && reminder.repeat !== "none") {
+            var labels = { daily: "🔁 Daily", weekly: "🔁 Weekly", monthly: "🔁 Monthly", yearly: "🔁 Yearly" };
+            repeatLabel = '<span class="recurring-badge">' + (labels[reminder.repeat] || "🔁 Repeating") + '</span>';
+        }
+
+        // Checklist HTML
+        var checklistHtml = "";
+        if (reminder.checklist && reminder.checklist.length > 0) {
+            checklistHtml = '<ul class="card-checklist">';
+            reminder.checklist.forEach(function(item) {
+                checklistHtml += '<li class="' + (item.done ? "done" : "") + '">' +
+                    (item.done ? "☑" : "☐") + " " + escapeHtml(item.text) + '</li>';
+            });
+            checklistHtml += '</ul>';
+        }
+
         reminderContainer.innerHTML += `
 
        <div class="reminder-card ${priorityClass}
 ${reminder.completed ? "completed-card" : ""}"
 data-category="${reminder.category}"
 data-priority="${reminder.priority}">
+            ${repeatLabel}
             <h3>${reminder.taskName}</h3>
 
             <p>📂 ${reminder.category}</p>
@@ -506,6 +586,7 @@ data-priority="${reminder.priority}">
             <p>⏳ ${reminder.duration || "-"}</p>
 
             <p>📝 ${reminder.notes || "-"}</p>
+            ${checklistHtml}
             ${isOverdue ?
 
 `<span class="overdue-badge">
@@ -550,6 +631,16 @@ data-priority="${reminder.priority}">
 
                 </button>
 
+                <button
+
+                    class="share-btn"
+
+                    onclick="shareReminder(${index})">
+
+                    📤
+
+                </button>
+
             </div>
 
         </div>
@@ -558,6 +649,39 @@ data-priority="${reminder.priority}">
 
     });
 
+}
+
+// ==============================
+// Share Reminder
+// ==============================
+
+function shareReminder(index) {
+    var reminders = getReminders();
+    var r = reminders[index];
+    var text = "📌 " + r.taskName + "\n";
+    text += "📂 " + r.category + " | ⭐ " + r.priority + "\n";
+    text += "📅 " + r.taskDate + " 🕒 " + r.taskTime + "\n";
+    if (r.duration) text += "⏳ " + r.duration + "\n";
+    if (r.notes) text += "📝 " + r.notes + "\n";
+    if (r.repeat && r.repeat !== "none") {
+        var rLabels = { daily: "Every Day", weekly: "Every Week", monthly: "Every Month", yearly: "Every Year" };
+        text += "🔁 " + (rLabels[r.repeat] || "Repeating") + "\n";
+    }
+    if (r.checklist && r.checklist.length > 0) {
+        text += "\n☑️ Checklist:\n";
+        r.checklist.forEach(function(item) {
+            text += (item.done ? "☑" : "☐") + " " + item.text + "\n";
+        });
+    }
+    text += "\n— Shared from TaskFlow Pro";
+
+    if (navigator.share) {
+        navigator.share({ title: r.taskName, text: text }).catch(function() {});
+    } else {
+        // Fallback: open WhatsApp with pre-filled text
+        var waUrl = "https://wa.me/?text=" + encodeURIComponent(text);
+        window.open(waUrl, "_blank");
+    }
 }
 
 // ==============================
@@ -582,7 +706,7 @@ function deleteReminderItem(index){
 }
 
 // ==============================
-// Complete Reminder
+// Complete Reminder (with recurring auto-next)
 // ==============================
 
 function completeReminder(index){
@@ -613,18 +737,58 @@ function completeReminder(index){
 
 }
 
-    completeReminderStorage(index);
-    showNotification(
-    "Task Completed",
-    "Great job! Reminder marked as completed.",
-    "success"
-);
+    // If recurring, calculate next date instead of marking complete
+    if (reminder.repeat && reminder.repeat !== "none") {
+        var nextDate = calculateNextDate(reminder.taskDate, reminder.repeat);
+        reminder.taskDate = nextDate;
+        // Reset checklist items for next occurrence
+        if (reminder.checklist && reminder.checklist.length > 0) {
+            reminder.checklist.forEach(function(item) {
+                item.done = false;
+            });
+        }
+        reminder.completed = false;
+        updateReminder(index, reminder);
+        showNotification(
+            "Task Repeated",
+            "Next occurrence: " + nextDate,
+            "info"
+        );
+    } else {
+        completeReminderStorage(index);
+        showNotification(
+            "Task Completed",
+            "Great job! Reminder marked as completed.",
+            "success"
+        );
+    }
 
     displayReminders();
     displayUpcomingReminders();
     updateDashboardCounts();
     updateAnalytics();
 
+}
+
+// ==============================
+// Calculate next date for recurring
+// ==============================
+
+function calculateNextDate(currentDate, repeat) {
+    var d = new Date(currentDate + "T00:00:00");
+    if (repeat === "daily") {
+        d.setDate(d.getDate() + 1);
+    } else if (repeat === "weekly") {
+        d.setDate(d.getDate() + 7);
+    } else if (repeat === "monthly") {
+        d.setMonth(d.getMonth() + 1);
+    } else if (repeat === "yearly") {
+        d.setFullYear(d.getFullYear() + 1);
+    }
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
 }
 
 // ==============================
@@ -653,16 +817,32 @@ function editReminder(index){
     reminder.taskTime;
 
     document.getElementById("duration").value =
-    reminder.duration;
+    reminder.duration || "";
 
     document.getElementById("notes").value =
-    reminder.notes;
+    reminder.notes || "";
+
+    // Recurring
+    document.getElementById("repeatOption").value =
+    reminder.repeat || "none";
+
+    // Checklist
+    currentChecklist = (reminder.checklist && reminder.checklist.length > 0)
+        ? JSON.parse(JSON.stringify(reminder.checklist))
+        : [];
+
+    var enableCb = document.getElementById("enableChecklist");
+    enableCb.checked = currentChecklist.length > 0;
+    document.getElementById("checklistGroup").style.display =
+        currentChecklist.length > 0 ? "block" : "none";
+    renderChecklist();
 
     editingIndex = index;
 
     modalOverlay.classList.add("active");
 
 }
+
 // ==============================
 // Dashboard Counts
 // ==============================
@@ -721,6 +901,7 @@ function updateDashboardCounts(){
     overdueCount;
 
 }
+
 // ==============================
 // Display Upcoming Reminders
 // ==============================
@@ -737,7 +918,7 @@ function displayUpcomingReminders(){
     const now = new Date();
 
     const upcoming = reminders.filter(function(reminder){
-       
+
         if(reminder.completed) return false;
 
         const reminderDate =
@@ -746,8 +927,6 @@ function displayUpcomingReminders(){
         return reminderDate > now;
 
     });
-    console.log("Upcoming reminders:", upcoming.length);
-console.log(upcoming);
 
     upcoming.sort(function(a,b){
 
@@ -783,11 +962,17 @@ console.log(upcoming);
 
     upcoming.slice(0,3).forEach(function(reminder){
 
+        var repeatTag = "";
+        if (reminder.repeat && reminder.repeat !== "none") {
+            var rr = { daily: "🔁 Daily", weekly: "🔁 Weekly", monthly: "🔁 Monthly", yearly: "🔁 Yearly" };
+            repeatTag = ' <span style="font-size:12px;color:#7c3aed;">' + (rr[reminder.repeat] || "") + '</span>';
+        }
+
         container.innerHTML += `
 
         <div class="upcoming-card">
 
-            <h3>${reminder.taskName}</h3>
+            <h3>${reminder.taskName}${repeatTag}</h3>
 
             <p>📅 ${formatDate(reminder.taskDate)}</p>
 
@@ -802,9 +987,11 @@ console.log(upcoming);
     });
 
 }
+
 // ==============================
-// Load App
+// Utility functions
 // ==============================
+
 function formatTime(time){
 
     if(!time) return "";
@@ -826,6 +1013,7 @@ function formatTime(time){
     return `${hour}:${minute} ${ampm}`;
 
 }
+
 function formatDate(date){
 
     if(!date) return "";
@@ -857,6 +1045,11 @@ function formatDate(date){
     return reminderDate.toLocaleDateString();
 
 }
+
+// ==============================
+// Load App
+// ==============================
+
 document.addEventListener("DOMContentLoaded", function(){
 
     displayReminders();
@@ -866,7 +1059,7 @@ document.addEventListener("DOMContentLoaded", function(){
     updateDashboardCounts();
     updateAnalytics();
 
-closeReminderModal();
+    closeReminderModal();
 
 });
 

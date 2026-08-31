@@ -84,7 +84,7 @@
         <header class="topbar">
             <div>
                 <h1>Dashboard</h1>
-            </div> <button class="add-btn"> <i class="fa-solid fa-plus"></i> New Reminder </button>
+            </div> <div class="topbar-buttons"> <button class="add-btn" id="topbarVoiceBtn"> <i class="fa-solid fa-microphone"></i> 🎙️ Voice </button> <button class="add-btn"> <i class="fa-solid fa-plus"></i> New Reminder </button> </div>
         </header> <!-- Welcome Card -->
         <section class="welcome-card">
             <h2>Good Morning 👋</h2>
@@ -327,8 +327,8 @@
                 <h2>Create Reminder</h2> <button id="closeModal"> <i class="fa-solid fa-xmark"></i> </button>
             </div>
             <form id="reminderForm">
-                <div class="input-group"> <label>Task Name</label> <input type="text" id="taskName"
-                        placeholder="Enter task name" required> </div>
+                <div class="input-group"> <label>Task Name</label> <div class="voice-input-row"><input type="text" id="taskName"
+                        placeholder="Enter task name" required> <button type="button" id="voiceReminderBtn" class="voice-btn" aria-label="Voice Reminder — tap to speak" title="Voice Reminder"><i class="fa-solid fa-microphone"></i> <span class="voice-btn-label">🎙️ Voice</span></button></div><div id="voiceStatus" class="voice-status" style="display:none;"></div> </div>
                 <div class="input-group"> <label>Category</label> <select id="category">
                         <option>Study</option>
                         <option>Work</option>
@@ -346,6 +346,21 @@
                 <div class="input-group"> <label>Time</label> <input type="time" id="taskTime" required> </div>
                 <div class="input-group"> <label>Duration</label> <input type="text" id="duration"
                         placeholder="Example: 2 Hours"> </div>
+                <div class="input-group"> <label>🔁 Repeat</label> <select id="repeatOption">
+                        <option value="none">No Repeat</option>
+                        <option value="daily">Every Day</option>
+                        <option value="weekly">Every Week</option>
+                        <option value="monthly">Every Month</option>
+                        <option value="yearly">Every Year</option>
+                    </select> </div>
+                <div class="input-group checklist-group" id="checklistGroup" style="display:none;">
+                     <label>☑️ Checklist</label>
+                     <div id="checklistContainer"></div>
+                     <div class="checklist-add-row">
+                         <input type="text" id="checklistInput" placeholder="Add item and press Enter">
+                         <button type="button" id="addChecklistBtn" class="checklist-add-btn">+</button>
+                     </div>
+                </div>
                 <div class="input-group">
                      <label>Notes</label>
                       <textarea id="notes" rows="4"
@@ -378,6 +393,12 @@
 
 </div>
                  </div>
+                <div class="modal-extras">
+                    <label class="checklist-toggle">
+                        <input type="checkbox" id="enableChecklist">
+                        <span>☑️ Checklist</span>
+                    </label>
+                </div>
                 <div class="modal-buttons"> 
                     <button type="button" id="cancelBtn"> Cancel </button>
                      <button type="submit"
@@ -388,10 +409,13 @@
     </div> <!-- JavaScript -->
     <script src="js/storage.js"></script>
     <script src="js/notification.js"></script>
+    <script src="js/reminder-notifications.js"></script>
+    <script src="js/voice.js"></script>
     <script src="js/app.js"></script>
     <script src="js/reminder.js"></script>
     <script src="js/calendar.js"></script>
     <script src="js/settings.js"></script>
+    <script src="js/dashboard.js"></script>
     <script src="js/analytics.js"></script>
     <script src="js/search.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">

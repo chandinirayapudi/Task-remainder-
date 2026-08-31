@@ -1,0 +1,11 @@
+{
+  "appId": "com.taskflow.pro",
+  "appName": "TaskFlow Pro",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
