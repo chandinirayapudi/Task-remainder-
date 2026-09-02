@@ -7,7 +7,7 @@
 // ==============================
 
 const newReminderBtn =
-document.querySelector(".add-btn");
+document.getElementById("topbarNewReminderBtn");
 
 const quickReminderBtn =
 document.getElementById("quickReminderBtn");
@@ -87,6 +87,16 @@ function openReminderModal(){
     document.getElementById("checklistContainer").innerHTML = "";
     document.getElementById("enableChecklist").checked = false;
     renderChecklist();
+
+    // Reset location reminder
+    locationReminder.checked = false;
+    useCurrentLocationBtn.style.display = "none";
+    selectedLocationText.style.display = "none";
+    selectedLatitude = null;
+    selectedLongitude = null;
+
+    // Reset notes
+    document.getElementById("notes").value = "";
 
     modalOverlay.classList.add("active");
 
@@ -522,6 +532,13 @@ function displayReminders(){
 
     reminders.forEach(function(reminder,index){
 
+        // Escape HTML to prevent XSS
+        var safeName = escapeHtml(reminder.taskName);
+        var safeCategory = escapeHtml(reminder.category);
+        var safePriority = escapeHtml(reminder.priority);
+        var safeDuration = escapeHtml(reminder.duration || "-");
+        var safeNotes = escapeHtml(reminder.notes || "-");
+
         let priorityClass = "";
         const reminderDate =
 new Date(reminder.taskDate + "T" + reminder.taskTime);
@@ -573,19 +590,19 @@ ${reminder.completed ? "completed-card" : ""}"
 data-category="${reminder.category}"
 data-priority="${reminder.priority}">
             ${repeatLabel}
-            <h3>${reminder.taskName}</h3>
+            <h3>${safeName}</h3>
 
-            <p>📂 ${reminder.category}</p>
+            <p>📂 ${safeCategory}</p>
 
-            <p>⭐ ${reminder.priority}</p>
+            <p>⭐ ${safePriority}</p>
 
             <p>📅 ${reminder.taskDate}</p>
 
             <p>🕒 ${reminder.taskTime}</p>
 
-            <p>⏳ ${reminder.duration || "-"}</p>
+            <p>⏳ ${safeDuration}</p>
 
-            <p>📝 ${reminder.notes || "-"}</p>
+            <p>📝 ${safeNotes}</p>
             ${checklistHtml}
             ${isOverdue ?
 
@@ -721,13 +738,16 @@ function completeReminder(index){
         reminder.taskDate + "T" + reminder.taskTime
     );
 
-    if(now < reminderDateTime){
+    // Allow completing tasks for today (even if time is later today)
+    // Only block tasks that are scheduled for a future DATE
+    var todayStr = new Date().toISOString().split("T")[0];
+    if(reminder.taskDate > todayStr){
 
     showNotification(
 
         "Future Reminder",
 
-        "This reminder is scheduled for the future. You can't complete it yet.",
+        "This reminder is scheduled for a future date. You can't complete it yet.",
 
         "warning"
 
@@ -972,7 +992,7 @@ function displayUpcomingReminders(){
 
         <div class="upcoming-card">
 
-            <h3>${reminder.taskName}${repeatTag}</h3>
+            <h3>${escapeHtml(reminder.taskName)}${repeatTag}</h3>
 
             <p>📅 ${formatDate(reminder.taskDate)}</p>
 
@@ -1061,8 +1081,11 @@ document.addEventListener("DOMContentLoaded", function(){
 
     closeReminderModal();
 
+    // Dispatch data changed event after all modules are loaded
+    window.dispatchEvent(
+        new Event("taskflowDataChanged")
+    );
+
 });
 
-window.dispatchEvent(
-    new Event("taskflowDataChanged")
-);
+// Note: taskflowDataChanged event is now dispatched in DOMContentLoaded below

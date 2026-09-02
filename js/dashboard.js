@@ -21,10 +21,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Helper: restore main dashboard sections (undo location.js hiding)
+    function restoreDashboardSections() {
+        var selectors = ['.welcome-card', '.cards', '.reminder-section', '.analytics-section', '.upcoming'];
+        selectors.forEach(function(sel) {
+            var el = document.querySelector(sel);
+            if (el) el.style.display = '';
+        });
+        var locSection = document.querySelector('.location-section');
+        if (locSection) locSection.style.display = 'none';
+        document.querySelectorAll('nav a').forEach(function(link) { link.classList.remove('active'); });
+    }
+
     // Dashboard
     if (dashboardBtn) {
         dashboardBtn.addEventListener("click", function (event) {
             event.preventDefault();
+            restoreDashboardSections();
             window.scrollTo({
                 top: 0,
                 behavior: "smooth"
@@ -36,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (remindersBtn) {
         remindersBtn.addEventListener("click", function (event) {
             event.preventDefault();
+            restoreDashboardSections();
             goTo(".reminder-section");
         });
     }
@@ -44,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (analyticsBtn) {
         analyticsBtn.addEventListener("click", function (event) {
             event.preventDefault();
+            restoreDashboardSections();
             goTo(".analytics-section");
         });
     }
@@ -52,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (locationBtn) {
         locationBtn.addEventListener("click", function (event) {
             event.preventDefault();
-            goTo(".location-section");
         });
     }
 
@@ -60,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (settingsBtn) {
         settingsBtn.addEventListener("click", function (event) {
             event.preventDefault();
-
             if (typeof openSettings === "function") {
                 openSettings();
             }

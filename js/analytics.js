@@ -38,53 +38,7 @@ reminders.forEach(function(reminder) {
     }
 
 });
-function updateCategoryStats(reminders) {
 
-    const categoryStats =
-        document.getElementById("categoryStats");
-
-    const categories = {};
-
-    reminders.forEach(function(reminder) {
-
-        const category =
-            reminder.category || "Uncategorized";
-
-        if (!categories[category]) {
-            categories[category] = 0;
-        }
-
-        categories[category]++;
-
-    });
-
-    categoryStats.innerHTML = "";
-
-    Object.keys(categories).forEach(function(category) {
-
-        const row =
-            document.createElement("div");
-
-        row.className = "category-row";
-
-        const name =
-            document.createElement("span");
-
-        name.textContent = category;
-
-        const count =
-            document.createElement("strong");
-
-        count.textContent = categories[category];
-
-        row.appendChild(name);
-        row.appendChild(count);
-
-        categoryStats.appendChild(row);
-
-    });
-
-}
 
 // Basic statistics
 
@@ -192,29 +146,7 @@ function() {
 }
 );
 
-const sidebarAnalyticsBtn =
-document.getElementById("sidebarAnalyticsBtn");
 
-if (sidebarAnalyticsBtn) {
-
-sidebarAnalyticsBtn.addEventListener("click", function(event) {
-
-    event.preventDefault();
-
-    const analyticsSection =
-        document.querySelector(".analytics-section");
-
-    if (analyticsSection) {
-
-        analyticsSection.scrollIntoView({
-            behavior: "smooth"
-        });
-
-    }
-
-});
-
-}
 window.addEventListener("taskflowDataChanged", function() {
 
     updateAnalytics();

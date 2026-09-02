@@ -32,6 +32,33 @@ function createSettingsPanel() {
 
                 <div class="settings-item">
                     <div>
+                        <h3>🌐 Language</h3>
+                        <p>Choose language for voice input and smart parsing.</p>
+                    </div>
+
+                    <select id="languageSelect" class="settings-select">
+                        <option value="auto">Auto (Detect)</option>
+                        <option value="en-US">English</option>
+                        <option value="te-IN">తెలుగు (Telugu)</option>
+                        <option value="hi-IN">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
+
+                <div class="settings-item">
+                    <div>
+                        <h3>🗣️ Mother Tongue</h3>
+                        <p>Select your mother tongue for better voice recognition.</p>
+                    </div>
+
+                    <select id="motherTongueSelect" class="settings-select">
+                        <option value="none">None</option>
+                        <option value="te-IN">తెలుగు (Telugu)</option>
+                        <option value="hi-IN">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
+
+                <div class="settings-item">
+                    <div>
                         <h3>Dark Mode</h3>
                         <p>Use a darker appearance for the app.</p>
                     </div>
@@ -130,11 +157,23 @@ function loadSettings() {
     const notifications =
         localStorage.getItem("taskflow_notifications") !== "false";
 
+    const savedLanguage =
+        localStorage.getItem("taskflow_language") || "auto";
+
+    const savedMotherTongue =
+        localStorage.getItem("taskflow_mother_tongue") || "none";
+
     const darkToggle =
         document.getElementById("darkModeToggle");
 
     const notificationToggle =
         document.getElementById("notificationToggle");
+
+    const languageSelect =
+        document.getElementById("languageSelect");
+
+    const motherTongueSelect =
+        document.getElementById("motherTongueSelect");
 
     if (darkToggle) {
         darkToggle.checked = darkMode;
@@ -142,6 +181,14 @@ function loadSettings() {
 
     if (notificationToggle) {
         notificationToggle.checked = notifications;
+    }
+
+    if (languageSelect) {
+        languageSelect.value = savedLanguage;
+    }
+
+    if (motherTongueSelect) {
+        motherTongueSelect.value = savedMotherTongue;
     }
 }
 
@@ -168,6 +215,50 @@ function setupSettingsEvents() {
                 "dark-mode",
                 this.checked
             );
+        });
+
+    document
+        .getElementById("languageSelect")
+        .addEventListener("change", function () {
+
+            var val = this.value;
+            var label = this.options[this.selectedIndex].text;
+
+            if (val === "auto") {
+                localStorage.setItem("taskflow_language", "auto");
+            } else {
+                localStorage.setItem("taskflow_language", val);
+            }
+
+            showNotification(
+                "Language Changed",
+                "Voice input will now use " + label + ".",
+                "info"
+            );
+        });
+
+    document
+        .getElementById("motherTongueSelect")
+        .addEventListener("change", function () {
+
+            var val = this.value;
+            var label = this.options[this.selectedIndex].text;
+
+            localStorage.setItem("taskflow_mother_tongue", val);
+
+            if (val === "none") {
+                showNotification(
+                    "Mother Tongue Removed",
+                    "Voice recognition will use your selected language only.",
+                    "info"
+                );
+            } else {
+                showNotification(
+                    "Mother Tongue Set",
+                    "Voice input will now recognize " + label + " better.",
+                    "info"
+                );
+            }
         });
 
     document
@@ -408,6 +499,22 @@ function addSettingsStyles() {
             background: #4338ca;
         }
 
+        .settings-select {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .settings-select {
+            background: #374151;
+            color: #f9fafb;
+            border-color: #4b5563;
+        }
+
         .settings-switch {
             position: relative;
             width: 46px;
@@ -469,6 +576,34 @@ function addSettingsStyles() {
     document.head.appendChild(style);
 }
 
+function detectDeviceLanguage() {
+    var saved = localStorage.getItem("taskflow_language");
+
+    // Skip if user chose any language (including auto)
+    if (saved) {
+        return;
+    }
+
+    var detected = "en-US"; // default
+
+    // Check navigator.languages array (full list of user's preferred languages)
+    var langs = navigator.languages || [];
+    for (var i = 0; i < langs.length; i++) {
+        var lang = langs[i].toLowerCase();
+        if (lang.startsWith("hi")) { detected = "hi-IN"; break; }
+        if (lang.startsWith("te")) { detected = "te-IN"; break; }
+    }
+
+    // Also check navigator.language (primary language)
+    if (detected === "en-US") {
+        var primary = (navigator.language || navigator.userLanguage || "").toLowerCase();
+        if (primary.startsWith("hi")) detected = "hi-IN";
+        else if (primary.startsWith("te")) detected = "te-IN";
+    }
+
+    localStorage.setItem("taskflow_language", detected);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // Apply dark mode on page load if previously enabled
@@ -476,6 +611,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (savedDarkMode) {
         document.body.classList.add("dark-mode");
     }
+
+    // Auto-detect device language on first launch
+    detectDeviceLanguage();
 
     createSettingsPanel();
 

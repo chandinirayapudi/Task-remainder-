@@ -4,7 +4,7 @@
 // location.js
 // ======================================
 
-console.log("LOCATION JS LOADED");
+
 
 // ======================================
 // Elements
@@ -39,19 +39,25 @@ sidebarLocationBtn.addEventListener("click", (event) => {
 
     event.preventDefault();
 
-    document.querySelector(".welcome-card").style.display = "none";
-    document.querySelector(".cards").style.display = "none";
-    document.querySelector(".reminder-section").style.display = "none";
-    document.querySelector(".analytics-section").style.display = "none";
-    document.querySelector(".upcoming").style.display = "none";
+    // Hide dashboard sections
+    var selectors = ['.welcome-card', '.cards', '.reminder-section', '.analytics-section', '.upcoming'];
+    selectors.forEach(function(sel) {
+        var el = document.querySelector(sel);
+        if (el) el.style.display = "none";
+    });
 
     locationSection.style.display = "block";
 
+    // Refresh active state in sidebar
     document.querySelectorAll("nav a").forEach(link => {
         link.classList.remove("active");
     });
-
     sidebarLocationBtn.classList.add("active");
+
+    // Invalidate Leaflet map size when section becomes visible
+    if (locationMap) {
+        setTimeout(function() { locationMap.invalidateSize(); }, 100);
+    }
 
 });
 
@@ -88,6 +94,10 @@ getLocationBtn.addEventListener("click", () => {
 
             locationStatus.textContent =
                 `Location detected: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+
+            // Show the map container
+            var mapEl = document.getElementById('locationMap');
+            if (mapEl) mapEl.style.display = 'block';
 
 
             // ======================================

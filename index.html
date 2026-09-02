@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow Pro</title> <!-- CSS -->
+    <title>TaskFlow Pro</title>
+    <link rel="icon" type="image/x-icon" href="assests/favicon.ico"> <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/reminder.css">
     <link rel="stylesheet" href="css/calendar.css">
@@ -12,6 +13,7 @@
     <link rel="stylesheet" href="css/analytics.css">
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/voice-confirm.css">
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -84,7 +86,7 @@
         <header class="topbar">
             <div>
                 <h1>Dashboard</h1>
-            </div> <div class="topbar-buttons"> <button class="add-btn" id="topbarVoiceBtn"> <i class="fa-solid fa-microphone"></i> 🎙️ Voice </button> <button class="add-btn"> <i class="fa-solid fa-plus"></i> New Reminder </button> </div>
+            </div> <div class="topbar-buttons"> <button class="add-btn" id="topbarVoiceBtn"> <i class="fa-solid fa-microphone"></i> 🎙️ Voice </button> <button class="add-btn" id="topbarNewReminderBtn"> <i class="fa-solid fa-plus"></i> New Reminder </button> </div>
         </header> <!-- Welcome Card -->
         <section class="welcome-card">
             <h2>Good Morning 👋</h2>
@@ -168,15 +170,15 @@
                     <i
                         class="fa-solid fa-calendar-days"></i><br><br> 
                         <span>View Calendar</span> 
-                    </button> <button
-                    id="quickToday'sBtn">
+                    </button>                <button id="quickTodaysBtn">
                      <i class="fa-solid fa-list-check"></i><br><br>
                       <span>Today's Tasks</span>
                 </button> <button id="quickSettingsBtn">
                      <i class="fa-solid fa-gear"></i><br><br>
                       <span>Settings</span>
-                </button> </div>
-                
+                </button>                </div>
+        </section>
+
 <!-- Analytics Section -->
 
 <section class="analytics-section">
@@ -262,7 +264,7 @@
     </div>
 
 </section>
-        </section>
+
 <!-- ========================= Location Section ========================= -->
 
 <section class="location-section">
@@ -336,6 +338,7 @@
                         <option>Shopping</option>
                         <option>Personal</option>
                         <option>Other</option>
+                        <option>Music</option>
                     </select> </div>
                 <div class="input-group"> <label>Priority</label> <select id="priority">
                         <option>Low</option>
@@ -363,36 +366,17 @@
                 </div>
                 <div class="input-group">
                      <label>Notes</label>
-                      <textarea id="notes" rows="4"
-                        placeholder="Additional notes...">
-                    </textarea>
-                    <!-- Location Reminder -->
-
-<div class="input-group location-reminder-option">
-
-    <label>
-        📍 Location Reminder
-    </label>
-
-    <label class="location-toggle">
-        <input type="checkbox" id="locationReminder">
-        <span>Enable location reminder</span>
-    </label>
-
-    <button
-        type="button"
-        id="useCurrentLocationBtn"
-        style="display: none;">
-        📍 Use Current Location
-    </button>
-
-    <p id="selectedLocationText"
-       style="display: none;">
-        No location selected.
-    </p>
-
-</div>
-                 </div>
+                      <textarea id="notes" rows="4" placeholder="Additional notes..."></textarea>
+                </div>
+                <div class="input-group location-reminder-option">
+                    <label>📍 Location Reminder</label>
+                    <label class="location-toggle">
+                        <input type="checkbox" id="locationReminder">
+                        <span>Enable location reminder</span>
+                    </label>
+                    <button type="button" id="useCurrentLocationBtn" style="display: none;">📍 Use Current Location</button>
+                    <p id="selectedLocationText" style="display: none;">No location selected.</p>
+                </div>
                 <div class="modal-extras">
                     <label class="checklist-toggle">
                         <input type="checkbox" id="enableChecklist">
@@ -406,7 +390,43 @@
                     </div>
             </form>
         </div>
-    </div> <!-- JavaScript -->
+    </div> <!-- ========================= Voice Confirmation Overlay ========================= -->
+    <div class="voice-confirm-overlay" id="voiceConfirmOverlay">
+        <div class="voice-confirm-modal">
+            <div class="voice-confirm-header">
+                <h2><i class="fa-solid fa-microphone"></i> Voice Input</h2>
+                <button id="voiceConfirmClose"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="voice-confirm-body">
+                <div class="voice-confirm-field">
+                    <label>I heard:</label>
+                    <p id="voiceConfirmHeard" class="voice-confirm-transcript"></p>
+                </div>
+                <div class="voice-confirm-field">
+                    <label>Task:</label>
+                    <p id="voiceConfirmTask" class="voice-confirm-value"></p>
+                </div>
+                <div class="voice-confirm-field">
+                    <label>Date:</label>
+                    <p id="voiceConfirmDate" class="voice-confirm-value"></p>
+                </div>
+                <div class="voice-confirm-field">
+                    <label>Time:</label>
+                    <p id="voiceConfirmTime" class="voice-confirm-value"></p>
+                </div>
+            </div>
+            <div class="voice-confirm-buttons">
+                <button id="voiceConfirmCancel" class="voice-btn-cancel">Cancel</button>
+                <button id="voiceConfirmEdit" class="voice-btn-edit">Edit</button>
+                <button id="voiceConfirmSave" class="voice-btn-save">Save</button>
+            </div>
+            <div id="voiceConfirmLowConfidence" class="voice-confirm-low" style="display:none;">
+                <p><i class="fa-solid fa-triangle-exclamation"></i> I couldn't understand clearly. Please try again or edit the text.</p>
+            </div>
+        </div>
+    </div>
+
+ <!-- JavaScript -->
     <script src="js/storage.js"></script>
     <script src="js/notification.js"></script>
     <script src="js/reminder-notifications.js"></script>

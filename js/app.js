@@ -77,60 +77,14 @@ function displayCurrentDate() {
     welcomeCard.appendChild(dateElement);
 
 }
-// Quick Actions
-
-
-const quickToday =
-document.getElementById("quickToday'sBtn");
-
-if (quickToday) {
-
-    quickToday.addEventListener("click", () => {
-
-        const today =
-            new Date().toISOString().split("T")[0];
-
-        const cards =
-            document.querySelectorAll(".reminder-card");
-
-        cards.forEach(function(card) {
-
-            const dateText =
-                card.querySelector("p:nth-of-type(3)");
-
-            if (!dateText) return;
-
-            const taskDate =
-                dateText.textContent.replace("📅 ", "").trim();
-
-            if (taskDate === today) {
-
-                card.style.display = "flex";
-
-            } else {
-
-                card.style.display = "none";
-
-            }
-
-        });
-
-        document.querySelector(".reminder-section")
-            .scrollIntoView({
-                behavior: "smooth"
-            });
-
-    });
-
-}
- // ======================================
+// ======================================
 // Quick Actions
 // ======================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
     const quickToday =
-        document.getElementById("quickToday'sBtn");
+        document.getElementById("quickTodaysBtn");
 
     if (quickToday) {
 
@@ -151,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const taskDate =
                     dateText.textContent
-                        .replace("📅", "")
+                        .replace(/📅\s*/g, "")
                         .trim();
 
                 card.style.display =

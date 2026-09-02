@@ -1,6 +1,6 @@
 // ======================================
 // TaskFlow Pro - Reminder Notifications
-// Sound alerts + spoken reminders + browser notifications
+// Sound alerts + spoken reminders + browser notifications + LOCAL NOTIFICATIONS
 // ======================================
 
 (function () {
@@ -8,6 +8,130 @@
 
     var notifiedReminders = {};
     var CHECK_INTERVAL = 30000;
+    var localNotificationsAvailable = false;
+
+    // ======================================
+    // Check if Local Notifications are available
+    // ======================================
+
+    function isLocalNotificationsAvailable() {
+        return window.Capacitor && 
+               window.Capacitor.Plugins && 
+               window.Capacitor.Plugins.LocalNotifications;
+    }
+
+    // ======================================
+    // Request Local Notifications permission
+    // ======================================
+
+    async function requestLocalNotificationsPermission() {
+        if (!isLocalNotificationsAvailable()) {
+            console.log('Local Notifications not available');
+            return false;
+        }
+
+        try {
+            var LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
+            var permission = await LocalNotifications.requestPermissions();
+            console.log('Local Notifications permission:', permission);
+            localNotificationsAvailable = permission.display === 'granted';
+            return localNotificationsAvailable;
+        } catch (e) {
+            console.error('Local Notifications permission error:', e);
+            return false;
+        }
+    }
+
+    // ======================================
+    // Schedule a local notification
+    // ======================================
+
+    async function scheduleLocalNotification(title, body, scheduleTime) {
+        if (!localNotificationsAvailable || !isLocalNotificationsAvailable()) {
+            return false;
+        }
+
+        try {
+            var LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
+            
+            var notification = {
+                title: title,
+                body: body,
+                id: Math.floor(Date.now() / 1000) % 2147483647,
+                schedule: { at: scheduleTime },
+                smallIcon: 'ic_launcher',
+                largeIcon: 'ic_launcher',
+                iconColor: '#4F46E5'
+            };
+
+            var result = await LocalNotifications.schedule({
+                notifications: [notification]
+            });
+            
+            console.log('Local notification scheduled:', result);
+            return true;
+        } catch (e) {
+            console.error('Local notification schedule error:', e);
+            return false;
+        }
+    }
+
+    // ======================================
+    // Cancel all scheduled local notifications
+    // ======================================
+
+    async function cancelAllLocalNotifications() {
+        if (!localNotificationsAvailable || !isLocalNotificationsAvailable()) {
+            return;
+        }
+
+        try {
+            var LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
+            var pending = await LocalNotifications.getPending();
+            
+            if (pending.notifications && pending.notifications.length > 0) {
+                var ids = pending.notifications.map(function(n) { return n.id; });
+                await LocalNotifications.cancel({ notifications: ids.map(function(id) { return { id: id }; }) });
+                console.log('Cancelled all local notifications:', ids.length);
+            }
+        } catch (e) {
+            console.error('Cancel local notifications error:', e);
+        }
+    }
+
+    // ======================================
+    // Schedule all upcoming reminders as local notifications
+    // ======================================
+
+    async function scheduleAllReminders() {
+        if (!localNotificationsAvailable) return;
+
+        // First cancel all existing scheduled notifications
+        await cancelAllLocalNotifications();
+
+        if (typeof getReminders !== 'function') return;
+
+        var reminders = getReminders();
+        var now = new Date();
+
+        reminders.forEach(function (reminder) {
+            if (reminder.completed) return;
+
+            var reminderTime = new Date(reminder.taskDate + 'T' + reminder.taskTime);
+            
+            // Only schedule future reminders (within next 24 hours)
+            var diffMs = reminderTime.getTime() - now.getTime();
+            var diffHours = diffMs / (1000 * 60 * 60);
+            
+            if (diffHours > 0 && diffHours <= 24) {
+                scheduleLocalNotification(
+                    '⏰ Reminder: ' + reminder.taskName,
+                    'Category: ' + (reminder.category || 'Personal') + ' | Time: ' + reminder.taskTime,
+                    reminderTime
+                );
+            }
+        });
+    }
 
     // ======================================
     // Generate alert sound using Web Audio API
@@ -128,7 +252,7 @@
     }
 
     // ======================================
-    // Check for due reminders
+    // Check for due reminders (foreground check)
     // ======================================
 
     function checkDueReminders() {
@@ -176,23 +300,39 @@
     // Initialize
     // ======================================
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async function () {
         // Request permission on first user click (Edge requirement)
         var userClicked = false;
         function onFirstUserClick() {
             if (userClicked) return;
             userClicked = true;
             requestNotificationPermission(function (status) {
-                console.log('Notification permission:', status);
+                console.log('Browser notification permission:', status);
             });
             document.removeEventListener('click', onFirstUserClick);
         }
         document.addEventListener('click', onFirstUserClick);
 
+        // Request Local Notifications permission (for Android)
+        await requestLocalNotificationsPermission();
+
+        // Schedule all reminders as local notifications (background support)
+        await scheduleAllReminders();
+
+        // Foreground check every 30 seconds
         checkDueReminders();
         setInterval(checkDueReminders, CHECK_INTERVAL);
+
+        // Re-schedule local notifications every hour
+        setInterval(scheduleAllReminders, 60 * 60 * 1000);
     });
 
+    // ======================================
+    // Expose functions globally
+    // ======================================
+
     window.requestTaskFlowNotifications = requestNotificationPermission;
+    window.scheduleAllReminders = scheduleAllReminders;
+    window.cancelAllLocalNotifications = cancelAllLocalNotifications;
 
 })();

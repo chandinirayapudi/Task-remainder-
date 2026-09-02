@@ -1,0 +1,294 @@
+/* ===================================
+   Voice Confirmation Overlay
+=================================== */
+
+.voice-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.voice-confirm-overlay.active {
+    display: flex;
+}
+
+.voice-confirm-modal {
+    width: min(480px, 100%);
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: vcSlideIn 0.3s ease;
+}
+
+@keyframes vcSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.voice-confirm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.voice-confirm-header h2 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.voice-confirm-header h2 i {
+    color: #5146e5;
+}
+
+.voice-confirm-header button {
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.voice-confirm-header button:hover {
+    background: #f3f4f6;
+}
+
+.voice-confirm-body {
+    padding: 20px;
+}
+
+.voice-confirm-field {
+    margin-bottom: 16px;
+}
+
+.voice-confirm-field:last-child {
+    margin-bottom: 0;
+}
+
+.voice-confirm-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.voice-confirm-transcript {
+    font-size: 16px;
+    color: #1f2937;
+    background: #f3f4f6;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 0;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.voice-confirm-value {
+    font-size: 15px;
+    color: #374151;
+    margin: 0;
+    padding: 8px 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #5146e5;
+}
+
+.voice-confirm-buttons {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 1px solid #eee;
+    justify-content: flex-end;
+}
+
+.voice-btn-cancel {
+    border: none;
+    background: #e5e7eb;
+    color: #374151;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.voice-btn-cancel:hover {
+    background: #d1d5db;
+}
+
+.voice-btn-edit {
+    border: none;
+    background: #5146e5;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.voice-btn-edit:hover {
+    background: #4338ca;
+}
+
+.voice-btn-save {
+    border: none;
+    background: #10b981;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.voice-btn-save:hover {
+    background: #059669;
+}
+
+.voice-confirm-low {
+    padding: 12px 20px;
+    background: #fef3c7;
+    border-top: 1px solid #fde68a;
+    text-align: center;
+}
+
+.voice-confirm-low p {
+    margin: 0;
+    color: #92400e;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.voice-confirm-low i {
+    color: #f59e0b;
+}
+
+/* Voice status indicator */
+.voice-status {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 6px;
+    display: none;
+}
+
+.voice-status--listening {
+    color: #5146e5;
+    background: #eef2ff;
+    animation: vcPulse 1.5s infinite;
+}
+
+.voice-status--success {
+    color: #065f46;
+    background: #d1fae5;
+}
+
+.voice-status--error {
+    color: #991b1b;
+    background: #fee2e2;
+}
+
+.voice-status--warning {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.voice-status--info {
+    color: #1e40af;
+    background: #dbeafe;
+}
+
+@keyframes vcPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Voice button in listening state */
+.voice-btn.listening {
+    background: #ef4444;
+    animation: vcPulse 1s infinite;
+}
+
+/* Dark mode overrides */
+body.dark-mode .voice-confirm-modal {
+    background: #1f2937;
+    color: #f9fafb;
+}
+
+body.dark-mode .voice-confirm-header {
+    border-color: #374151;
+}
+
+body.dark-mode .voice-confirm-header h2 {
+    color: #f9fafb;
+}
+
+body.dark-mode .voice-confirm-header button {
+    color: #9ca3af;
+}
+
+body.dark-mode .voice-confirm-header button:hover {
+    background: #374151;
+}
+
+body.dark-mode .voice-confirm-transcript {
+    background: #374151;
+    color: #f3f4f6;
+}
+
+body.dark-mode .voice-confirm-value {
+    background: #374151;
+    color: #e5e7eb;
+    border-left-color: #818cf8;
+}
+
+body.dark-mode .voice-confirm-buttons {
+    border-color: #374151;
+}
+
+body.dark-mode .voice-btn-cancel {
+    background: #374151;
+    color: #d1d5db;
+}
+
+body.dark-mode .voice-btn-cancel:hover {
+    background: #4b5563;
+}
+
+body.dark-mode .voice-confirm-low {
+    background: #451a03;
+    border-color: #78350f;
+}
+
+body.dark-mode .voice-confirm-low p {
+    color: #fde68a;
+}
